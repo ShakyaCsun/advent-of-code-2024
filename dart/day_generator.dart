@@ -100,6 +100,7 @@ Received status code ${response.statusCode} from server.
 
 You might need to refresh your session token.
 You can do so by deleting the file at $sessionTokenPath and restarting the generator.''');
+      client.close(force: true);
       return;
     }
     final dataPath = 'input/aoc$dayNumber.txt';
