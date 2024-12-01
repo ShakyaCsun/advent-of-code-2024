@@ -2,3 +2,4 @@
 // avoid cluttering main with imports for every day. Additionally, it makes
 // boilerplate code creation with the CLI easier.
 export 'day00.dart';
+export 'day01.dart';
