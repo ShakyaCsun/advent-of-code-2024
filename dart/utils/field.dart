@@ -1,6 +1,5 @@
-import 'package:quiver/iterables.dart';
+import 'index.dart';
 
-typedef Position = (int x, int y);
 typedef VoidFieldCallback = void Function(int, int);
 
 /// A helper class for easier work with 2D data.
@@ -81,6 +80,11 @@ class Field<T> {
     }
   }
 
+  List<Position> get allPositions => [
+        for (var y = 0; y < height; y++)
+          for (var x = 0; x < width; x++) (x, y),
+      ];
+
   /// Returns all adjacent cells to the given position. This does `NOT` include
   /// diagonal neighbours.
   Iterable<Position> adjacent(int x, int y) {
@@ -143,7 +147,7 @@ class Field<T> {
 /// Extension for [Field]s where `T` is of type [int].
 extension IntegerField on Field<int> {
   /// Increments the values of Position `x` `y`.
-  dynamic increment(int x, int y) => setValueAt(x, y, getValueAt(x, y) + 1);
+  void increment(int x, int y) => setValueAt(x, y, getValueAt(x, y) + 1);
 
   /// Convenience method to create a Field from a single String, where the
   /// String is a "block" of integers.
@@ -155,8 +159,3 @@ extension IntegerField on Field<int> {
     return Field(lines);
   }
 }
-
-// extension CoordinateLocator on Position {
-//   int get x => item1;
-//   int get y => item2;
-// }
