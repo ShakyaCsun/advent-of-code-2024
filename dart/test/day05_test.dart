@@ -15,33 +15,59 @@ import '../solutions/day05.dart';
 /// Make sure to respect the multiline string format to avoid additional
 /// newlines at the end.
 const _exampleInput1 = '''
+47|53
+97|13
+97|61
+97|47
+75|29
+61|13
+75|53
+29|13
+97|29
+53|29
+61|53
+97|53
+61|29
+47|13
+75|47
+97|75
+47|61
+75|61
+47|29
+75|13
+53|13
+
+75,47,61,53,29
+97,61,53,29,13
+75,29,13
+75,97,47,61,53
+61,13,29
+97,13,75,29,47
 ''';
 
 /// Paste in the small example that is given for the SECOND PART of the puzzle.
 /// It will be evaluated against the `_exampleSolutionPart2` below.
 ///
 /// In case the second part uses the same example, uncomment below line instead:
-// const _exampleInput2 = _exampleInput1;
-const _exampleInput2 = '''
-''';
+const _exampleInput2 = _exampleInput1;
 
 /// The solution for the FIRST PART's example, which is given by the puzzle.
-const _exampleSolutionPart1 = 0;
+const _exampleSolutionPart1 = 143;
 
 /// The solution for the SECOND PART's example, which is given by the puzzle.
-const _exampleSolutionPart2 = 0;
+const _exampleSolutionPart2 = 123;
 
 /// The actual solution for the FIRST PART of the puzzle, based on your input.
 /// This can only be filled out after you have solved the puzzle and is used
 /// for regression testing when refactoring.
 /// As long as the variable is `null`, the tests will be skipped.
-const _puzzleSolutionPart1 = null;
+const _puzzleSolutionPart1 = 3608;
 
 /// The actual solution for the SECOND PART of the puzzle, based on your input.
 /// This can only be filled out after you have solved the puzzle and is used
 /// for regression testing when refactoring.
 /// As long as the variable is `null`, the tests will be skipped.
-const _puzzleSolutionPart2 = null;
+const _puzzleSolutionPart2 = 4922;
 
 void main() {
   group(
