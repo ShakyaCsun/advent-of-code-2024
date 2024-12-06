@@ -50,6 +50,7 @@ void main() {
     Day03(),
     Day04(),
     Day05(),
+    Day06(),
   ];
-  runBenchmark(days.skip(4).toList());
+  runBenchmark(days.skip(5).toList());
 }

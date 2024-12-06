@@ -11,14 +11,19 @@ class Field<T> {
         // overrides
         field = List<List<T>>.generate(
           field.length,
-          (y) => List<T>.generate(field[0].length, (x) => field[y][x]),
+          (y) => List<T>.generate(
+            field[0].length,
+            (x) => field[y][x],
+            growable: false,
+          ),
+          growable: false,
         ),
         height = field.length,
         width = field[0].length;
 
   final List<List<T>> field;
-  int height;
-  int width;
+  final int height;
+  final int width;
 
   /// Returns the value at the given position.
   T getValueAtPosition(Position position) {
@@ -80,10 +85,19 @@ class Field<T> {
     }
   }
 
-  List<Position> get allPositions => [
-        for (var y = 0; y < height; y++)
-          for (var x = 0; x < width; x++) (x, y),
-      ];
+  Iterable<Position> get allPositions {
+    return field.indexed.expand(
+      (indexedRow) {
+        final (y, row) = indexedRow;
+        return row.indexed.map(
+          (indexedValue) {
+            final (x, _) = indexedValue;
+            return (x, y);
+          },
+        );
+      },
+    );
+  }
 
   /// Returns all adjacent cells to the given position. This does `NOT` include
   /// diagonal neighbours.
@@ -124,11 +138,7 @@ class Field<T> {
 
   /// Returns a deep copy by value of this [Field].
   Field<T> copy() {
-    final newField = List<List<T>>.generate(
-      height,
-      (y) => List<T>.generate(width, (x) => field[y][x]),
-    );
-    return Field<T>(newField);
+    return Field<T>(field);
   }
 
   @override
