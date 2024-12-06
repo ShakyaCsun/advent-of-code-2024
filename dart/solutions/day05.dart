@@ -28,44 +28,34 @@ class Day05 extends GenericDay {
   @override
   int solvePart1() {
     final printQueue = parseInput();
-    return printQueue.pagesToProduce.map(
-      (pages) {
-        final sortedPages = [...pages].sortedByCompare(
-          (element) => element,
-          (a, b) {
-            return comparePageNumber(a, b, printQueue);
-          },
+    return printQueue.pagesToProduce.fold(
+      0,
+      (previousValue, pages) {
+        final sortedPages = pages.sorted(
+          printQueue.comparePageNumber,
         );
         if (listsEqual(pages, sortedPages)) {
-          return pages.middlePageNumber;
+          return previousValue + pages.middlePageNumber;
         }
-        return 0;
+        return previousValue;
       },
-    ).fold(
-      0,
-      (previousValue, element) => previousValue + element,
     );
   }
 
   @override
   int solvePart2() {
     final printQueue = parseInput();
-    return printQueue.pagesToProduce.map(
-      (pages) {
-        final sortedPages = [...pages].sortedByCompare(
-          (element) => element,
-          (a, b) {
-            return comparePageNumber(a, b, printQueue);
-          },
+    return printQueue.pagesToProduce.fold(
+      0,
+      (previousValue, pages) {
+        final sortedPages = pages.sorted(
+          printQueue.comparePageNumber,
         );
         if (!listsEqual(pages, sortedPages)) {
-          return sortedPages.middlePageNumber;
+          return previousValue + sortedPages.middlePageNumber;
         }
-        return 0;
+        return previousValue + 0;
       },
-    ).fold(
-      0,
-      (previousValue, element) => previousValue + element,
     );
   }
 }
@@ -76,12 +66,25 @@ class PrintQueueInput {
   final List<(int, int)> orderRules;
   final List<List<int>> pagesToProduce;
 
-  Set<int> get pagesWithRules {
-    return orderRules
-        .expand<int>(
-          (element) => [element.$1, element.$2],
-        )
-        .toSet();
+  late final Set<int> _pagesWithRules = orderRules
+      .expand<int>(
+        (element) => [element.$1, element.$2],
+      )
+      .toSet();
+
+  int comparePageNumber(int a, int b) {
+    final ruleSet = _pagesWithRules;
+    if (ruleSet.contains(a)) {
+      if (ruleSet.contains(b)) {
+        if (orderRules.contains((a, b))) {
+          return -1;
+        }
+        if (orderRules.contains((b, a))) {
+          return 1;
+        }
+      }
+    }
+    return 0;
   }
 }
 
@@ -90,20 +93,4 @@ extension on List<int> {
     final middle = length ~/ 2;
     return this[middle];
   }
-}
-
-int comparePageNumber(int a, int b, PrintQueueInput input) {
-  final ruleSet = input.pagesWithRules;
-  final orderRules = input.orderRules;
-  if (ruleSet.contains(a)) {
-    if (ruleSet.contains(b)) {
-      if (orderRules.contains((a, b))) {
-        return -1;
-      }
-      if (orderRules.contains((b, a))) {
-        return 1;
-      }
-    }
-  }
-  return 0;
 }
