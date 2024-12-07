@@ -30,27 +30,25 @@ const _exampleInput1 = '''
 /// It will be evaluated against the `_exampleSolutionPart2` below.
 ///
 /// In case the second part uses the same example, uncomment below line instead:
-// const _exampleInput2 = _exampleInput1;
-const _exampleInput2 = '''
-''';
+const _exampleInput2 = _exampleInput1;
 
 /// The solution for the FIRST PART's example, which is given by the puzzle.
 const _exampleSolutionPart1 = 3749;
 
 /// The solution for the SECOND PART's example, which is given by the puzzle.
-const _exampleSolutionPart2 = 0;
+const _exampleSolutionPart2 = 11387;
 
 /// The actual solution for the FIRST PART of the puzzle, based on your input.
 /// This can only be filled out after you have solved the puzzle and is used
 /// for regression testing when refactoring.
 /// As long as the variable is `null`, the tests will be skipped.
-const _puzzleSolutionPart1 = null;
+const _puzzleSolutionPart1 = 2437272016585;
 
 /// The actual solution for the SECOND PART of the puzzle, based on your input.
 /// This can only be filled out after you have solved the puzzle and is used
 /// for regression testing when refactoring.
 /// As long as the variable is `null`, the tests will be skipped.
-const _puzzleSolutionPart2 = null;
+const _puzzleSolutionPart2 = 162987117690649;
 
 void main() {
   group(

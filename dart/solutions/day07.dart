@@ -15,8 +15,7 @@ class Day07 extends GenericDay {
     return calibrations.fold(
       0,
       (previousValue, calibration) {
-        final containsResult =
-            calibration.possibleResults().contains(calibration.result);
+        final containsResult = calibration.canBeTrue();
         return containsResult
             ? previousValue + calibration.result
             : previousValue;
@@ -30,8 +29,10 @@ class Day07 extends GenericDay {
     return calibrations.fold(
       0,
       (previousValue, calibration) {
-        final containsResult =
-            calibration.possibleResults2().contains(calibration.result);
+        final containsResult = calibration.canBeTrue() ||
+            calibration.canBeTrue(
+              stepTwo: true,
+            );
         return containsResult
             ? previousValue + calibration.result
             : previousValue;
@@ -41,7 +42,7 @@ class Day07 extends GenericDay {
 }
 
 class Calibration {
-  Calibration({required this.result, required this.numbers});
+  const Calibration({required this.result, required this.numbers});
 
   factory Calibration.fromLine(String line) {
     final [result, numbers, ...] = line.split(': ');
@@ -54,80 +55,35 @@ class Calibration {
   final int result;
   final List<int> numbers;
 
-  List<int> possibleResults() {
-    if (numbers.length == 2) {
-      return [
-        ...Operator.values.map(
-          (e) {
-            return e.apply(numbers[0], numbers[1]);
-          },
-        ),
-      ];
-    }
-    final possibleResults = Calibration(
-      result: result,
-      numbers: numbers.take(2).toList(),
-    ).possibleResults();
-    return possibleResults
-        .map(
-          (resultOfTwo) {
-            if (resultOfTwo > result) {
-              return <int>[];
-            }
-            return Calibration(
-              result: result,
-              numbers: [resultOfTwo, ...numbers.skip(2)],
-            ).possibleResults();
-          },
-        )
-        .expand(
-          (element) => element,
-        )
-        .toList();
+  bool canBeTrue({bool stepTwo = false}) {
+    return possibleResults(stepTwo: stepTwo).contains(result);
   }
 
-  List<int> possibleResults2() {
-    if (numbers.length == 2) {
+  Iterable<int> possibleResults({bool stepTwo = false}) {
+    final [a, b, ...rest] = numbers;
+    if (rest.isEmpty) {
       return [
-        int.parse('${numbers[0]}${numbers[1]}'),
-        ...Operator.values.map(
-          (e) {
-            return e.apply(numbers[0], numbers[1]);
-          },
-        ),
+        if (stepTwo) int.parse('$a$b'),
+        a * b,
+        a + b,
       ];
     }
-    final possibleResults = Calibration(
+    final resultsCombination = Calibration(
       result: result,
-      numbers: numbers.take(2).toList(),
-    ).possibleResults2();
-    return possibleResults
-        .map(
-          (resultOfTwo) {
-            if (resultOfTwo > result) {
-              return <int>[];
-            }
-            return Calibration(
-              result: result,
-              numbers: [resultOfTwo, ...numbers.skip(2)],
-            ).possibleResults2();
-          },
-        )
-        .expand(
-          (element) => element,
-        )
-        .toList();
-  }
-}
-
-enum Operator {
-  add,
-  multiply;
-
-  int apply(int a, int b) {
-    return switch (this) {
-      Operator.add => a + b,
-      Operator.multiply => a * b,
-    };
+      numbers: [a, b],
+    ).possibleResults(stepTwo: stepTwo);
+    return resultsCombination.map(
+      (resultOfTwo) {
+        if (resultOfTwo > result) {
+          return <int>[];
+        }
+        return Calibration(
+          result: result,
+          numbers: [resultOfTwo, ...rest],
+        ).possibleResults(stepTwo: stepTwo);
+      },
+    ).expand(
+      (element) => element,
+    );
   }
 }
