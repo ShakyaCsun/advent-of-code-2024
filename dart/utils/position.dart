@@ -10,6 +10,12 @@ extension PositionOperatorX on Position {
     final (otherX, otherY) = other;
     return (x + otherX, y + otherY);
   }
+
+  Position operator -(Position other) {
+    final (x, y) = this;
+    final (otherX, otherY) = other;
+    return (x - otherX, y - otherY);
+  }
 }
 
 abstract class Positions {
