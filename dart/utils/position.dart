@@ -16,6 +16,17 @@ extension PositionOperatorX on Position {
     final (otherX, otherY) = other;
     return (x - otherX, y - otherY);
   }
+
+  int get x => $1;
+  int get y => $2;
+
+  /// (y, x)
+  Position get inverse => (y, x);
+
+  int distanceSquare(Position other) {
+    final (x, y) = other - this;
+    return x * x + y * y;
+  }
 }
 
 abstract class Positions {
