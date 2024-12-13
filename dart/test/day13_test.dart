@@ -1,3 +1,4 @@
+// Puzzle Solutions are null before they are solved and we can skip the tests
 // ignore_for_file: unnecessary_null_comparison
 
 import 'package:test/test.dart';
@@ -42,19 +43,19 @@ const _exampleInput2 = _exampleInput1;
 const _exampleSolutionPart1 = 480;
 
 /// The solution for the SECOND PART's example, as calculated.
-const _exampleSolutionPart2 = 875318608908;
+const _exampleSolutionPart2 = 875_318_608_908;
 
 /// The actual solution for the FIRST PART of the puzzle, based on your input.
 /// This can only be filled out after you have solved the puzzle and is used
 /// for regression testing when refactoring.
 /// As long as the variable is `null`, the tests will be skipped.
-const _puzzleSolutionPart1 = 29201;
+const _puzzleSolutionPart1 = 29_201;
 
 /// The actual solution for the SECOND PART of the puzzle, based on your input.
 /// This can only be filled out after you have solved the puzzle and is used
 /// for regression testing when refactoring.
 /// As long as the variable is `null`, the tests will be skipped.
-const _puzzleSolutionPart2 = 104140871044942;
+const _puzzleSolutionPart2 = 104_140_871_044_942;
 
 void main() {
   group(

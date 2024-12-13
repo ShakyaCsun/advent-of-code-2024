@@ -105,7 +105,7 @@ You can do so by deleting the file at $sessionTokenPath and restarting the gener
     }
     final dataPath = 'input/aoc$dayNumber.txt';
     await response.pipe(File(dataPath).openWrite());
-  } catch (e) {
+  } on Exception catch (e) {
     print('Error loading file: $e');
   } finally {
     client.close();
@@ -151,6 +151,7 @@ class Day$dayNumber extends GenericDay {
 
 String _testTemplate(String day) {
   return '''
+// Puzzle Solutions are null before they are solved and we can skip the tests
 // ignore_for_file: unnecessary_null_comparison
 
 import 'package:test/test.dart';

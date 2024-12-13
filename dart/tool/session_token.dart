@@ -21,7 +21,7 @@ String? _readSessionToken() {
     if (token.isNotEmpty) {
       return token;
     }
-  } catch (e) {
+  } on Exception catch (e) {
     print('Error reading session token: $e');
   }
   return null;
@@ -32,7 +32,7 @@ void _writeSessionToken(String token) {
     File(sessionTokenPath)
         .create(recursive: true)
         .then((file) => file.writeAsStringSync(token));
-  } catch (e) {
+  } on Exception catch (e) {
     print('Error writing session token: $e');
   }
 }
@@ -61,5 +61,5 @@ const String _kSessionTokenPromptMessage = '''
   ║                                                                            ║
   ╚════════════════════════════════════════════════════════════════════════════╝
 
-  Please enter your session token: 
+  Please enter your session token:
   ''';

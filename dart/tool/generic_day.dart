@@ -16,6 +16,7 @@ abstract class GenericDay {
   /// This setter must only be used to mutate the input of an existing day
   /// implementation for testing purposes.
   @visibleForTesting
+  // Used only for testing
   // ignore: avoid_setters_without_getters
   set inputForTesting(String example) =>
       input = InputUtil.fromMultiLineString(example);

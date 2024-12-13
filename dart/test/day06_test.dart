@@ -1,3 +1,4 @@
+// Puzzle Solutions are null before they are solved and we can skip the tests
 // ignore_for_file: unnecessary_null_comparison
 
 import 'package:test/test.dart';

@@ -1,5 +1,3 @@
-// ignore_for_file: avoid_function_literals_in_foreach_calls
-
 import 'solutions/index.dart';
 import 'tool/generic_day.dart';
 
@@ -33,9 +31,11 @@ void main(List<String?> args) {
     onlyShowLast = false;
   }
 
-  onlyShowLast
-      ? days.last.printSolutions()
-      : days.forEach((day) => day.printSolutions());
+  void printDaySolution(GenericDay day) {
+    day.printSolutions();
+  }
+
+  onlyShowLast ? days.last.printSolutions() : days.forEach(printDaySolution);
 }
 
 void printHelper() {
