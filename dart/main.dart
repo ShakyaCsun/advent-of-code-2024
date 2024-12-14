@@ -17,6 +17,7 @@ final days = <GenericDay>[
   Day11(),
   Day12(),
   Day13(),
+  Day14(),
 ];
 
 void main(List<String?> args) {
@@ -39,15 +40,13 @@ void main(List<String?> args) {
 }
 
 void printHelper() {
-  print(
-    '''
+  print('''
 Usage: dart main.dart <command>
 
 Global Options:
   -h, --help    Show this help message
   -a, --all     Show all solutions
-''',
-  );
+''');
 }
 
 extension ArgsMatcher on String? {
