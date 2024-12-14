@@ -5,6 +5,9 @@ import '../utils/index.dart';
 class Day14 extends GenericDay {
   Day14() : super(14);
 
+  static const width = 101;
+  static const height = 103;
+
   @override
   List<RobotData> parseInput() {
     return input.getPerLine().map(RobotData.fromLine).toList();
@@ -13,69 +16,63 @@ class Day14 extends GenericDay {
   @override
   int solvePart1() {
     final robots = parseInput();
-    const rows = 103;
-    const cols = 101;
-    final robotsAfter100 = List.filled(100, 0).fold(robots, (previousValue, _) {
-      return previousValue.map((e) => e.next(rows, cols)).toList();
-    });
-    const horizontalMiddle = cols ~/ 2;
-    const verticalMiddle = rows ~/ 2;
-    return robotsAfter100
-        .map((e) {
-          return e.position;
-        })
-        .fold(<Quadrant, int>{}, (previousValue, position) {
-          if (position.x == horizontalMiddle || position.y == verticalMiddle) {
-            return previousValue;
-          }
-          final quadrant = switch (position) {
-            (< horizontalMiddle, < verticalMiddle) => Quadrant.topLeft,
-            (> horizontalMiddle, < verticalMiddle) => Quadrant.topRight,
-            (< horizontalMiddle, > verticalMiddle) => Quadrant.bottomLeft,
-            (> horizontalMiddle, > verticalMiddle) => Quadrant.bottomRight,
-
-            (_, _) => throw StateError('equal cases should be handled already'),
-          };
-          previousValue.update(
-            quadrant,
-            (value) => value + 1,
-            ifAbsent: () => 1,
-          );
-          return previousValue;
-        })
-        .values
-        .fold(1, (previousValue, element) {
-          return previousValue * element;
-        });
+    return safetyFactor(robots, width: width, height: height);
   }
 
   @override
   int solvePart2() {
-    var robots = parseInput();
-    const rows = 103;
-    const cols = 101;
-    var elapsedSeconds = 0;
-    final repeatsAfter = robots.first.countWhenRepeats(rows, cols);
-    print(repeatsAfter);
-    while (elapsedSeconds < repeatsAfter) {
-      elapsedSeconds++;
-      robots = robots.map((e) => e.next(rows, cols)).toList();
-      if (isChristmasTree(robots)) {
-        final field = Field<String>(
-          List.generate(rows, (y) {
-            return List.generate(cols, (x) {
-              if (robots.any((element) => element.position == (x, y))) {
-                return '*';
-              }
-              return ' ';
-            });
-          }),
-        );
-        print(field);
-        return elapsedSeconds;
+    final robots = parseInput();
+    final repeatsAfter = robots.first.countWhenRepeats(width, height);
+    int searchChristmasTree(int count) {
+      if (count >= repeatsAfter) {
+        // Cannot find Christmas Tree
+        return -1;
       }
+      final positions = robots.map((e) => e.move(width, height, count));
+      if (positions.isChristmasTree) {
+        print(positions.field(width, height));
+        return count;
+      }
+      return searchChristmasTree(count + 1);
     }
-    return 0;
+
+    return searchChristmasTree(0);
+  }
+
+  int safetyFactor(
+    List<RobotData> robots, {
+    required int width,
+    required int height,
+    int seconds = 100,
+  }) {
+    final finalRobotPositions = robots.map<Position>(
+      (robot) => robot.move(width, height, seconds),
+    );
+    final middleX = width ~/ 2;
+    final middleY = height ~/ 2;
+    final robotsInEachQuadrant = finalRobotPositions.fold(<Quadrant, int>{}, (
+      previousValue,
+      position,
+    ) {
+      final (x, y) = position;
+      if (x == middleX || y == middleY) {
+        return previousValue;
+      }
+      final isLeft = x < middleX;
+      final isTop = y < middleY;
+      final quadrant = switch ((isTop, isLeft)) {
+        (true, true) => Quadrant.topLeft,
+        (true, false) => Quadrant.topRight,
+        (false, true) => Quadrant.bottomLeft,
+        (false, false) => Quadrant.bottomRight,
+      };
+      previousValue.update(quadrant, (value) => value + 1, ifAbsent: () => 1);
+      return previousValue;
+    });
+    return robotsInEachQuadrant.values.fold(
+      1,
+      (previousValue, robotCount) => previousValue * robotCount,
+    );
   }
 }
 
@@ -94,35 +91,22 @@ class RobotData extends Equatable {
   final Position position;
   final Position velocity;
 
-  RobotData next(int rows, int cols) {
-    var (nx, ny) = position + velocity;
-    if (nx < 0) {
-      nx = cols + nx;
-    }
-    if (ny < 0) {
-      ny = rows + ny;
-    }
-    if (nx >= cols) {
-      nx = nx - cols;
-    }
-    if (ny >= rows) {
-      ny = ny - rows;
-    }
-    return RobotData(position: (nx, ny), velocity: velocity);
+  Position move(int width, int height, int seconds) {
+    final (nx, ny) = position + velocity * seconds;
+    return (nx % width, ny % height);
   }
 
-  int countWhenRepeats(int rows, int cols) {
+  int countWhenRepeats(int width, int height) {
     // All the robots repeat their position after same seconds.
     // Not useful information but interesting and understandable decision.
-    var count = 0;
-    var next = RobotData(position: position, velocity: velocity);
-    while (true) {
-      count++;
-      next = next.next(rows, cols);
-      if (next == this) {
+    int moveCount(int count) {
+      if (move(width, height, count) == position) {
         return count;
       }
+      return moveCount(count + 1);
     }
+
+    return moveCount(1);
   }
 
   @override
@@ -132,14 +116,36 @@ class RobotData extends Equatable {
   List<Object?> get props => [position, velocity];
 }
 
-bool isChristmasTree(List<RobotData> robots) {
-  final positions = {...robots.map((e) => e.position)};
-  if (positions.any((position) {
-    return positions.containsAll(
-      List.generate(20, (index) => (position.x, position.y + index)),
-    );
-  })) {
-    return true;
+extension on Iterable<Position> {
+  bool get isChristmasTree {
+    final positions = {...this};
+    return positions.any((position) {
+      final (x, y) = position;
+      return positions.containsAll(
+        Iterable.generate(
+          // Assuming that if robots make a vertical line of this height,
+          // then it is a Christmas Tree arrangement.
+          // For my input, any value from 9 to 33 works
+          14, // Chose 14 because it's day 14
+          (index) => (x, y + index),
+        ),
+      );
+    });
   }
-  return false;
+
+  // Used to print the tree for debug purpose
+  // ignore: unused_element
+  Field<String> field(int width, int height) {
+    return Field(
+      List.generate(
+        height,
+        (y) => List.generate(width, (x) {
+          if (contains((x, y))) {
+            return 'A';
+          }
+          return ' ';
+        }),
+      ),
+    );
+  }
 }

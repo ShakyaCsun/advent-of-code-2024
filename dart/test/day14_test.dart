@@ -49,7 +49,10 @@ void main() {
   group('Day 14 - Example Input', () {
     test('Part 1', () {
       final day = Day14()..inputForTesting = _exampleInput1;
-      expect(day.solvePart1(), _exampleSolutionPart1);
+      expect(
+        day.safetyFactor(day.parseInput(), width: 11, height: 7),
+        _exampleSolutionPart1,
+      );
     });
   });
   group('Day 14 - Puzzle Input', () {
