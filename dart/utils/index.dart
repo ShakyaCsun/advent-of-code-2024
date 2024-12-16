@@ -5,6 +5,7 @@ export 'package:quiver/iterables.dart';
 export 'package:quiver/strings.dart';
 
 export '../tool/generic_day.dart';
+export 'extensions.dart';
 export 'field.dart';
 export 'input_util.dart';
 export 'parse_util.dart';
