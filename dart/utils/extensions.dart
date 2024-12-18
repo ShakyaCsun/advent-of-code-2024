@@ -3,3 +3,5 @@ extension MapExtension<K, V> on Map<K, V> {
     return this[key] ?? ifAbsent;
   }
 }
+
+enum Part { one, two }
