@@ -27,6 +27,14 @@ extension PositionOperatorX on Position {
     final (x, y) = other - this;
     return x * x + y * y;
   }
+
+  /// Manhattan or Taxicab distance
+  ///
+  /// |x1 - x2| + |y1 - y2|
+  int manhattanDistance(Position other) {
+    final (x, y) = other - this;
+    return x.abs() + y.abs();
+  }
 }
 
 abstract class Positions {
@@ -59,10 +67,5 @@ abstract class Positions {
     bottomLeft,
   };
 
-  static const adjacent = <Position>{
-    top,
-    right,
-    bottom,
-    left,
-  };
+  static const adjacent = <Position>{top, right, bottom, left};
 }
