@@ -18,14 +18,12 @@ enum Part {
 
 // Create a new benchmark by extending BenchmarkBase
 class SolutionsBenchmark extends BenchmarkBase {
-  SolutionsBenchmark({
-    required GenericDay day,
-    required Part part,
-  })  : _solve = switch (part) {
-          Part.one => day.solvePart1,
-          Part.two => day.solvePart2,
-        },
-        super('Solutions Day ${day.day} $part');
+  SolutionsBenchmark({required GenericDay day, required Part part})
+    : _solve = switch (part) {
+        Part.one => day.solvePart1,
+        Part.two => day.solvePart2,
+      },
+      super('Solutions Day ${day.day} $part');
 
   final void Function() _solve;
 

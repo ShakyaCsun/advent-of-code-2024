@@ -11,52 +11,40 @@ class Day05 extends GenericDay {
   PrintQueueInput parseInput() {
     final split = input.getBy('\n\n');
     const splitter = LineSplitter();
-    final rules = splitter.convert(split[0]).map(
-      (e) {
-        final [a, b, ...] = e.split('|');
-        return (int.parse(a), int.parse(b));
-      },
-    ).toList();
-    final pages = splitter.convert(split[1]).map(
-      (e) {
-        return e.split(',').map(int.parse).toList();
-      },
-    ).toList();
+    final rules =
+        splitter.convert(split[0]).map((e) {
+          final [a, b, ...] = e.split('|');
+          return (int.parse(a), int.parse(b));
+        }).toList();
+    final pages =
+        splitter.convert(split[1]).map((e) {
+          return e.split(',').map(int.parse).toList();
+        }).toList();
     return PrintQueueInput(orderRules: rules, pagesToProduce: pages);
   }
 
   @override
   int solvePart1() {
     final printQueue = parseInput();
-    return printQueue.pagesToProduce.fold(
-      0,
-      (previousValue, pages) {
-        final sortedPages = pages.sorted(
-          printQueue.comparePageNumber,
-        );
-        if (listsEqual(pages, sortedPages)) {
-          return previousValue + pages.middlePageNumber;
-        }
-        return previousValue;
-      },
-    );
+    return printQueue.pagesToProduce.fold(0, (previousValue, pages) {
+      final sortedPages = pages.sorted(printQueue.comparePageNumber);
+      if (listsEqual(pages, sortedPages)) {
+        return previousValue + pages.middlePageNumber;
+      }
+      return previousValue;
+    });
   }
 
   @override
   int solvePart2() {
     final printQueue = parseInput();
-    return printQueue.pagesToProduce.fold(
-      0,
-      (previousValue, pages) {
-        final sortedPages = pages.sorted(
-          printQueue.comparePageNumber,
-        );
-        if (!listsEqual(pages, sortedPages)) {
-          return previousValue + sortedPages.middlePageNumber;
-        }
-        return previousValue + 0;
-      },
-    );
+    return printQueue.pagesToProduce.fold(0, (previousValue, pages) {
+      final sortedPages = pages.sorted(printQueue.comparePageNumber);
+      if (!listsEqual(pages, sortedPages)) {
+        return previousValue + sortedPages.middlePageNumber;
+      }
+      return previousValue + 0;
+    });
   }
 }
 
@@ -66,11 +54,8 @@ class PrintQueueInput {
   final List<(int, int)> orderRules;
   final List<List<int>> pagesToProduce;
 
-  late final Set<int> _pagesWithRules = orderRules
-      .expand<int>(
-        (element) => [element.$1, element.$2],
-      )
-      .toSet();
+  late final Set<int> _pagesWithRules =
+      orderRules.expand<int>((element) => [element.$1, element.$2]).toSet();
 
   int comparePageNumber(int a, int b) {
     final ruleSet = _pagesWithRules;

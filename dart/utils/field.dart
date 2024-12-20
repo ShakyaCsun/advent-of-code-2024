@@ -5,21 +5,21 @@ typedef VoidFieldCallback = void Function(int, int);
 /// A helper class for easier work with 2D data.
 class Field<T> {
   Field(List<List<T>> field)
-      : assert(field.isNotEmpty, 'Field must not be empty'),
-        assert(field[0].isNotEmpty, 'First position must not be empty'),
-        // creates a deep copy by value from given field to prevent unwarranted
-        // overrides
-        field = List<List<T>>.generate(
-          field.length,
-          (y) => List<T>.generate(
-            field[0].length,
-            (x) => field[y][x],
-            growable: false,
-          ),
+    : assert(field.isNotEmpty, 'Field must not be empty'),
+      assert(field[0].isNotEmpty, 'First position must not be empty'),
+      // creates a deep copy by value from given field to prevent unwarranted
+      // overrides
+      field = List<List<T>>.generate(
+        field.length,
+        (y) => List<T>.generate(
+          field[0].length,
+          (x) => field[y][x],
           growable: false,
         ),
-        height = field.length,
-        width = field[0].length;
+        growable: false,
+      ),
+      height = field.length,
+      width = field[0].length;
 
   final List<List<T>> field;
   final int height;
@@ -76,43 +76,30 @@ class Field<T> {
       .fold<int>(0, (acc, elem) => elem == searched ? acc + 1 : acc);
 
   /// Executes the given callback for all given positions.
-  void forPositions(
-    Iterable<Position> positions,
-    VoidFieldCallback callback,
-  ) {
+  void forPositions(Iterable<Position> positions, VoidFieldCallback callback) {
     for (final (x, y) in positions) {
       callback(x, y);
     }
   }
 
   Iterable<Position> get allPositions {
-    return field.indexed.expand(
-      (indexedRow) {
-        final (y, row) = indexedRow;
-        return row.indexed.map(
-          (indexedValue) {
-            final (x, _) = indexedValue;
-            return (x, y);
-          },
-        );
-      },
-    );
+    return field.indexed.expand((indexedRow) {
+      final (y, row) = indexedRow;
+      return row.indexed.map((indexedValue) {
+        final (x, _) = indexedValue;
+        return (x, y);
+      });
+    });
   }
 
   /// Returns all adjacent cells to the given position. This does `NOT` include
   /// diagonal neighbours.
   Iterable<Position> adjacent(int x, int y) {
-    return <Position>{
-      (x, y - 1),
-      (x, y + 1),
-      (x - 1, y),
-      (x + 1, y),
-    }..removeWhere(
-        (pos) {
-          final (x, y) = pos;
-          return x < 0 || y < 0 || x >= width || y >= height;
-        },
-      );
+    return <Position>{(x, y - 1), (x, y + 1), (x - 1, y), (x + 1, y)}
+      ..removeWhere((pos) {
+        final (x, y) = pos;
+        return x < 0 || y < 0 || x >= width || y >= height;
+      });
   }
 
   /// Returns all positional neighbours of a point. This includes the adjacent
@@ -128,12 +115,10 @@ class Field<T> {
       (x - 1, y + 1),
       (x - 1, y),
       (x - 1, y - 1),
-    }..removeWhere(
-        (pos) {
-          final (x, y) = pos;
-          return x < 0 || y < 0 || x >= width || y >= height;
-        },
-      );
+    }..removeWhere((pos) {
+      final (x, y) = pos;
+      return x < 0 || y < 0 || x >= width || y >= height;
+    });
   }
 
   /// Returns a deep copy by value of this [Field].
@@ -162,10 +147,11 @@ extension IntegerField on Field<int> {
   /// Convenience method to create a Field from a single String, where the
   /// String is a "block" of integers.
   static Field<int> fromString(String string) {
-    final lines = string
-        .split('\n')
-        .map((line) => line.trim().split('').map(int.parse).toList())
-        .toList();
+    final lines =
+        string
+            .split('\n')
+            .map((line) => line.trim().split('').map(int.parse).toList())
+            .toList();
     return Field(lines);
   }
 }

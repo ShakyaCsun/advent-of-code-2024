@@ -35,10 +35,7 @@ Future<void> main(List<String?> args) async {
   final dayFile = File(dayFileName);
 
   try {
-    await dayFile.create(
-      recursive: true,
-      exclusive: true,
-    );
+    await dayFile.create(recursive: true, exclusive: true);
     print('Generating $dayFileName');
     await dayFile.writeAsString(_dayTemplate(dayNumber));
   } on PathExistsException {
@@ -51,10 +48,7 @@ Future<void> main(List<String?> args) async {
   final testFileName = 'test/day${dayNumber}_test.dart';
   final testFile = File(testFileName);
   try {
-    await testFile.create(
-      recursive: true,
-      exclusive: true,
-    );
+    await testFile.create(recursive: true, exclusive: true);
     print('Generating $testFileName');
     await testFile.writeAsString(_testTemplate(dayNumber));
   } on PathExistsException {
@@ -77,10 +71,7 @@ Future<void> main(List<String?> args) async {
 
   // export new day in index file if not present
   if (!found) {
-    await exportFile.writeAsString(
-      content,
-      mode: FileMode.append,
-    );
+    await exportFile.writeAsString(content, mode: FileMode.append);
   }
 
   // Create input file
@@ -95,11 +86,13 @@ Future<void> main(List<String?> args) async {
     request.cookies.add(Cookie('session', session));
     final response = await request.close();
     if (response.statusCode != 200) {
-      print('''
+      print(
+        '''
 Received status code ${response.statusCode} from server.
 
 You might need to refresh your session token.
-You can do so by deleting the file at $sessionTokenPath and restarting the generator.''');
+You can do so by deleting the file at $sessionTokenPath and restarting the generator.''',
+      );
       client.close(force: true);
       return;
     }

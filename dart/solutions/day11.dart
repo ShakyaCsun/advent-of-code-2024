@@ -19,10 +19,11 @@ class Day11 extends GenericDay {
   @override
   int solvePart2() {
     final stoneCount = parseInput().stoneCount;
-    return blinkMultiple(blinkOptimized, stoneCount, times: 75).values.fold(
-          0,
-          (previousValue, element) => previousValue + element,
-        );
+    return blinkMultiple(
+      blinkOptimized,
+      stoneCount,
+      times: 75,
+    ).values.fold(0, (previousValue, element) => previousValue + element);
   }
 
   T blinkMultiple<T>(T Function(T) blink, T stones, {int times = 25}) {
@@ -34,40 +35,30 @@ class Day11 extends GenericDay {
 
   List<int> blink(List<int> stones) {
     return stones
-        .map<List<int>>(
-          (number) {
-            if (number == 0) {
-              return [1];
-            }
-            if (number.digitCount.isEven) {
-              final (left, right) = number.halves;
-              return [left, right];
-            }
-            return [number * 2024];
-          },
-        )
-        .expand(
-          (element) => element,
-        )
+        .map<List<int>>((number) {
+          if (number == 0) {
+            return [1];
+          }
+          if (number.digitCount.isEven) {
+            final (left, right) = number.halves;
+            return [left, right];
+          }
+          return [number * 2024];
+        })
+        .expand((element) => element)
         .toList();
   }
 
   Map<int, int> blinkOptimized(Map<int, int> stoneCounts) {
-    return stoneCounts.entries.map(
-      (e) {
-        final MapEntry(key: stone, value: count) = e;
-        final nextStones = blink([stone]);
-        return nextStones.stoneCount
-          ..updateAll(
-            (key, value) => value * count,
-          );
-      },
-    ).fold(
-      <int, int>{},
-      (previousValue, element) {
-        return element.entries.fold(
-          previousValue,
-          (stoneCount, entry) {
+    return stoneCounts.entries
+        .map((e) {
+          final MapEntry(key: stone, value: count) = e;
+          final nextStones = blink([stone]);
+          return nextStones.stoneCount
+            ..updateAll((key, value) => value * count);
+        })
+        .fold(<int, int>{}, (previousValue, element) {
+          return element.entries.fold(previousValue, (stoneCount, entry) {
             final MapEntry(:key, value: count) = entry;
             stoneCount.update(
               key,
@@ -75,10 +66,8 @@ class Day11 extends GenericDay {
               ifAbsent: () => count,
             );
             return stoneCount;
-          },
-        );
-      },
-    );
+          });
+        });
   }
 }
 
@@ -98,16 +87,9 @@ extension on int {
 
 extension on List<int> {
   Map<int, int> get stoneCount {
-    return fold(
-      <int, int>{},
-      (previousValue, element) {
-        previousValue.update(
-          element,
-          (value) => value + 1,
-          ifAbsent: () => 1,
-        );
-        return previousValue;
-      },
-    );
+    return fold(<int, int>{}, (previousValue, element) {
+      previousValue.update(element, (value) => value + 1, ifAbsent: () => 1);
+      return previousValue;
+    });
   }
 }

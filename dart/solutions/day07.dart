@@ -12,32 +12,24 @@ class Day07 extends GenericDay {
   @override
   int solvePart1() {
     final calibrations = parseInput();
-    return calibrations.fold(
-      0,
-      (previousValue, calibration) {
-        final containsResult = calibration.canBeTrue();
-        return containsResult
-            ? previousValue + calibration.result
-            : previousValue;
-      },
-    );
+    return calibrations.fold(0, (previousValue, calibration) {
+      final containsResult = calibration.canBeTrue();
+      return containsResult
+          ? previousValue + calibration.result
+          : previousValue;
+    });
   }
 
   @override
   int solvePart2() {
     final calibrations = parseInput();
-    return calibrations.fold(
-      0,
-      (previousValue, calibration) {
-        final containsResult = calibration.canBeTrue() ||
-            calibration.canBeTrue(
-              stepTwo: true,
-            );
-        return containsResult
-            ? previousValue + calibration.result
-            : previousValue;
-      },
-    );
+    return calibrations.fold(0, (previousValue, calibration) {
+      final containsResult =
+          calibration.canBeTrue() || calibration.canBeTrue(stepTwo: true);
+      return containsResult
+          ? previousValue + calibration.result
+          : previousValue;
+    });
   }
 }
 
@@ -62,28 +54,22 @@ class Calibration {
   Iterable<int> possibleResults({bool stepTwo = false}) {
     final [a, b, ...rest] = numbers;
     if (rest.isEmpty) {
-      return [
-        if (stepTwo) int.parse('$a$b'),
-        a * b,
-        a + b,
-      ];
+      return [if (stepTwo) int.parse('$a$b'), a * b, a + b];
     }
     final resultsCombination = Calibration(
       result: result,
       numbers: [a, b],
     ).possibleResults(stepTwo: stepTwo);
-    return resultsCombination.map(
-      (resultOfTwo) {
-        if (resultOfTwo > result) {
-          return <int>[];
-        }
-        return Calibration(
-          result: result,
-          numbers: [resultOfTwo, ...rest],
-        ).possibleResults(stepTwo: stepTwo);
-      },
-    ).expand(
-      (element) => element,
-    );
+    return resultsCombination
+        .map((resultOfTwo) {
+          if (resultOfTwo > result) {
+            return <int>[];
+          }
+          return Calibration(
+            result: result,
+            numbers: [resultOfTwo, ...rest],
+          ).possibleResults(stepTwo: stepTwo);
+        })
+        .expand((element) => element);
   }
 }

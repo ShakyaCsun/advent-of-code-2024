@@ -29,9 +29,9 @@ String? _readSessionToken() {
 
 void _writeSessionToken(String token) {
   try {
-    File(sessionTokenPath)
-        .create(recursive: true)
-        .then((file) => file.writeAsStringSync(token));
+    File(
+      sessionTokenPath,
+    ).create(recursive: true).then((file) => file.writeAsStringSync(token));
   } on Exception catch (e) {
     print('Error writing session token: $e');
   }

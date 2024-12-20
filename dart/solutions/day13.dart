@@ -15,23 +15,17 @@ class Day13 extends GenericDay {
   @override
   int solvePart1() {
     final machines = parseInput();
-    return machines.fold(
-      0,
-      (previousValue, machine) {
-        return previousValue + machine.requiredTokens;
-      },
-    );
+    return machines.fold(0, (previousValue, machine) {
+      return previousValue + machine.requiredTokens;
+    });
   }
 
   @override
   int solvePart2() {
     final machines = parseInput();
-    return machines.fold(
-      0,
-      (previousValue, machine) {
-        return previousValue + machine.withStep2Prize().requiredTokens;
-      },
-    );
+    return machines.fold(0, (previousValue, machine) {
+      return previousValue + machine.withStep2Prize().requiredTokens;
+    });
   }
 }
 

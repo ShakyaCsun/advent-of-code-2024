@@ -58,37 +58,33 @@ const _puzzleSolutionPart1 = 29_201;
 const _puzzleSolutionPart2 = 104_140_871_044_942;
 
 void main() {
-  group(
-    'Day 13 - Example Input',
-    () {
-      test('Part 1', () {
-        final day = Day13()..inputForTesting = _exampleInput1;
-        expect(day.solvePart1(), _exampleSolutionPart1);
-      });
-      test('Part 2', () {
-        final day = Day13()..inputForTesting = _exampleInput2;
-        expect(day.solvePart2(), _exampleSolutionPart2);
-      });
-    },
-  );
-  group(
-    'Day 13 - Puzzle Input',
-    () {
-      final day = Day13();
-      test(
-        'Part 1',
-        skip: _puzzleSolutionPart1 == null
-            ? 'Skipped because _puzzleSolutionPart1 is null'
-            : false,
-        () => expect(day.solvePart1(), _puzzleSolutionPart1),
-      );
-      test(
-        'Part 2',
-        skip: _puzzleSolutionPart2 == null
-            ? 'Skipped because _puzzleSolutionPart2 is null'
-            : false,
-        () => expect(day.solvePart2(), _puzzleSolutionPart2),
-      );
-    },
-  );
+  group('Day 13 - Example Input', () {
+    test('Part 1', () {
+      final day = Day13()..inputForTesting = _exampleInput1;
+      expect(day.solvePart1(), _exampleSolutionPart1);
+    });
+    test('Part 2', () {
+      final day = Day13()..inputForTesting = _exampleInput2;
+      expect(day.solvePart2(), _exampleSolutionPart2);
+    });
+  });
+  group('Day 13 - Puzzle Input', () {
+    final day = Day13();
+    test(
+      'Part 1',
+      skip:
+          _puzzleSolutionPart1 == null
+              ? 'Skipped because _puzzleSolutionPart1 is null'
+              : false,
+      () => expect(day.solvePart1(), _puzzleSolutionPart1),
+    );
+    test(
+      'Part 2',
+      skip:
+          _puzzleSolutionPart2 == null
+              ? 'Skipped because _puzzleSolutionPart2 is null'
+              : false,
+      () => expect(day.solvePart2(), _puzzleSolutionPart2),
+    );
+  });
 }

@@ -5,11 +5,10 @@ class Day06 extends GenericDay {
 
   @override
   Field<String> parseInput() {
-    final grid = input.getPerLine().map(
-      (line) {
-        return line.split('');
-      },
-    ).toList();
+    final grid =
+        input.getPerLine().map((line) {
+          return line.split('');
+        }).toList();
     return Field(grid);
   }
 
@@ -31,16 +30,13 @@ class Day06 extends GenericDay {
     );
 
     final path = travelField(field, Direction.up, startPosition);
-    return path.difference({startPosition}).fold(
-      0,
-      (previousValue, position) {
-        final newField = field.copy()..setValueAtPosition(position, '#');
-        if (travelingInLoop(newField, Direction.up, startPosition, const {})) {
-          return previousValue + 1;
-        }
-        return previousValue;
-      },
-    );
+    return path.difference({startPosition}).fold(0, (previousValue, position) {
+      final newField = field.copy()..setValueAtPosition(position, '#');
+      if (travelingInLoop(newField, Direction.up, startPosition, const {})) {
+        return previousValue + 1;
+      }
+      return previousValue;
+    });
   }
 
   Set<Position> travelField(
@@ -54,10 +50,7 @@ class Day06 extends GenericDay {
       if (next == '#') {
         return travelField(field, direction.turnRight(), startPosition);
       } else {
-        return {
-          startPosition,
-          ...travelField(field, direction, nextPosition),
-        };
+        return {startPosition, ...travelField(field, direction, nextPosition)};
       }
     }
     return {startPosition};
@@ -78,19 +71,12 @@ class Day06 extends GenericDay {
         if (knownRightTurns.contains(rightTurn)) {
           return true;
         }
-        return travelingInLoop(
-          field,
-          direction.turnRight(),
-          startPosition,
-          {...knownRightTurns, rightTurn},
-        );
+        return travelingInLoop(field, direction.turnRight(), startPosition, {
+          ...knownRightTurns,
+          rightTurn,
+        });
       }
-      return travelingInLoop(
-        field,
-        direction,
-        nextPosition,
-        knownRightTurns,
-      );
+      return travelingInLoop(field, direction, nextPosition, knownRightTurns);
     }
     return false;
   }

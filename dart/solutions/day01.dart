@@ -19,28 +19,16 @@ class Day01 extends GenericDay {
   int solvePart1() {
     final (left, right) = parseInput();
     right.sort();
-    return (left..sort()).foldIndexed(
-      0,
-      (index, previous, element) {
-        return previous + (element - right[index]).abs();
-      },
-    );
+    return (left..sort()).foldIndexed(0, (index, previous, element) {
+      return previous + (element - right[index]).abs();
+    });
   }
 
   @override
   int solvePart2() {
     final (left, right) = parseInput();
-    return left.fold(
-      0,
-      (previousValue, element) {
-        return previousValue +
-            element *
-                right
-                    .where(
-                      (r) => r == element,
-                    )
-                    .length;
-      },
-    );
+    return left.fold(0, (previousValue, element) {
+      return previousValue + element * right.where((r) => r == element).length;
+    });
   }
 }

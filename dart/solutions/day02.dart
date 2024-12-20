@@ -13,39 +13,31 @@ class Day02 extends GenericDay {
   @override
   int solvePart1() {
     final reports = parseInput();
-    return reports.fold(
-      0,
-      (previousValue, levels) {
-        if (isSafe(levels)) {
-          return previousValue + 1;
-        }
-        return previousValue;
-      },
-    );
+    return reports.fold(0, (previousValue, levels) {
+      if (isSafe(levels)) {
+        return previousValue + 1;
+      }
+      return previousValue;
+    });
   }
 
   @override
   int solvePart2() {
     final reports = parseInput();
-    return reports.fold(
-      0,
-      (previousValue, levels) {
-        if (isSafe(levels)) {
-          return previousValue + 1;
-        }
-        return levels.indexed.map(
-          (e) {
-            final (index, _) = e;
-            final newLevels = [...levels]..removeAt(index);
-            return isSafe(newLevels);
-          },
-        ).any(
-          (element) => element,
-        )
-            ? previousValue + 1
-            : previousValue;
-      },
-    );
+    return reports.fold(0, (previousValue, levels) {
+      if (isSafe(levels)) {
+        return previousValue + 1;
+      }
+      return levels.indexed
+              .map((e) {
+                final (index, _) = e;
+                final newLevels = [...levels]..removeAt(index);
+                return isSafe(newLevels);
+              })
+              .any((element) => element)
+          ? previousValue + 1
+          : previousValue;
+    });
   }
 
   bool isSafe(List<int> levels) {

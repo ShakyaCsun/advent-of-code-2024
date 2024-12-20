@@ -5,8 +5,8 @@ import 'dart:io';
 /// Note that file name and location must align.
 class InputUtil {
   InputUtil(int day)
-      : _inputAsString = _readInputDay(day),
-        _inputAsList = _readInputDayAsList(day);
+    : _inputAsString = _readInputDay(day),
+      _inputAsList = _readInputDayAsList(day);
 
   /// Reads the entire input contents as one String.
   /// This is useful for parsing the test input.
@@ -24,8 +24,8 @@ class InputUtil {
   /// final lines = input.getPerLine();
   /// ```
   InputUtil.fromMultiLineString(String input)
-      : _inputAsString = input,
-        _inputAsList = const LineSplitter().convert(input);
+    : _inputAsString = input,
+      _inputAsList = const LineSplitter().convert(input);
 
   final String _inputAsString;
   final List<String> _inputAsList;

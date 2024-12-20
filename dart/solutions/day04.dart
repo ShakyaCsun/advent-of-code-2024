@@ -5,14 +5,7 @@ class Day04 extends GenericDay {
 
   @override
   Field<String> parseInput() {
-    return Field(
-      input
-          .getPerLine()
-          .map(
-            (e) => e.split('').toList(),
-          )
-          .toList(),
-    );
+    return Field(input.getPerLine().map((e) => e.split('').toList()).toList());
   }
 
   @override
@@ -27,27 +20,15 @@ class Day04 extends GenericDay {
 
     final puzzle = parseInput();
     return puzzle.allPositions
-        .where(
-      (position) => puzzle.getValueAtPosition(position) == 'X',
-    )
-        .map(
-      (position) {
-        final masPositions = possibleMasPositions(position)
-          ..retainWhere(
-            (element) => element.every(
-              puzzle.isOnField,
-            ),
-          );
-        return masPositions
-            .where(
-              (e) => e.map(puzzle.getValueAtPosition).join() == 'MAS',
-            )
-            .length;
-      },
-    ).fold(
-      0,
-      (previousValue, element) => previousValue + element,
-    );
+        .where((position) => puzzle.getValueAtPosition(position) == 'X')
+        .map((position) {
+          final masPositions = possibleMasPositions(position)
+            ..retainWhere((element) => element.every(puzzle.isOnField));
+          return masPositions
+              .where((e) => e.map(puzzle.getValueAtPosition).join() == 'MAS')
+              .length;
+        })
+        .fold(0, (previousValue, element) => previousValue + element);
   }
 
   @override
@@ -55,34 +36,30 @@ class Day04 extends GenericDay {
     final puzzle = parseInput();
     return puzzle.allPositions
         .where((position) => puzzle.getValueAtPosition(position) == 'A')
-        .where(
-      (position) {
-        final diagonals = Positions.diagonals
-            .map(
-              (offset) => offset + position,
-            )
-            .toList();
-        if (diagonals.every(puzzle.isOnField)) {
-          final topLeft = puzzle.getValueAtPosition(
-            position + Positions.topLeft,
-          );
-          final topRight = puzzle.getValueAtPosition(
-            position + Positions.topRight,
-          );
-          final bottomLeft = puzzle.getValueAtPosition(
-            position + Positions.bottomLeft,
-          );
-          final bottomRight = puzzle.getValueAtPosition(
-            position + Positions.bottomRight,
-          );
-          if (topLeft == 'M' && bottomRight == 'S' ||
-              topLeft == 'S' && bottomRight == 'M') {
-            return topRight == 'M' && bottomLeft == 'S' ||
-                topRight == 'S' && bottomLeft == 'M';
+        .where((position) {
+          final diagonals =
+              Positions.diagonals.map((offset) => offset + position).toList();
+          if (diagonals.every(puzzle.isOnField)) {
+            final topLeft = puzzle.getValueAtPosition(
+              position + Positions.topLeft,
+            );
+            final topRight = puzzle.getValueAtPosition(
+              position + Positions.topRight,
+            );
+            final bottomLeft = puzzle.getValueAtPosition(
+              position + Positions.bottomLeft,
+            );
+            final bottomRight = puzzle.getValueAtPosition(
+              position + Positions.bottomRight,
+            );
+            if (topLeft == 'M' && bottomRight == 'S' ||
+                topLeft == 'S' && bottomRight == 'M') {
+              return topRight == 'M' && bottomLeft == 'S' ||
+                  topRight == 'S' && bottomLeft == 'M';
+            }
           }
-        }
-        return false;
-      },
-    ).length;
+          return false;
+        })
+        .length;
   }
 }
