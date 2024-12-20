@@ -5,9 +5,7 @@ class Day12 extends GenericDay {
 
   @override
   Field<String> parseInput() {
-    return Field(
-      input.getPerLine().map((line) => line.split('').toList()).toList(),
-    );
+    return StringField.fromInput(input);
   }
 
   @override

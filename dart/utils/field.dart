@@ -155,3 +155,20 @@ extension IntegerField on Field<int> {
     return Field(lines);
   }
 }
+
+/// Extension for [Field]s where `T` is of type [String].
+extension StringField on Field<String> {
+  /// First position where the value is equal to [element].
+  Position firstPositionOf(String element) {
+    return allPositions.firstWhere(
+      (position) => getValueAtPosition(position) == element,
+    );
+  }
+
+  /// Convenience method to create a [Field] from [InputUtil].
+  static Field<String> fromInput(InputUtil input) {
+    return Field(
+      input.getPerLine().map((line) => line.split('').toList()).toList(),
+    );
+  }
+}

@@ -5,9 +5,7 @@ class Day20 extends GenericDay {
 
   @override
   Field<String> parseInput() {
-    return Field(
-      input.getPerLine().map((line) => line.split('').toList()).toList(),
-    );
+    return StringField.fromInput(input);
   }
 
   @override
@@ -59,12 +57,8 @@ class Day20 extends GenericDay {
 
   List<Position> getPath() {
     final field = parseInput();
-    final start = field.allPositions.firstWhere((position) {
-      return field.getValueAtPosition(position) == 'S';
-    });
-    final end = field.allPositions.firstWhere((position) {
-      return field.getValueAtPosition(position) == 'E';
-    });
+    final start = field.firstPositionOf('S');
+    final end = field.firstPositionOf('E');
     return reconstructPath(searchPathAStar(field, start: start, end: end), end);
   }
 

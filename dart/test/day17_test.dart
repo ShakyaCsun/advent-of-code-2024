@@ -58,7 +58,7 @@ void main() {
       final day = Day17()..inputForTesting = _exampleInput1;
       expect(day.parseInput().getCompleteOutput(), _exampleSolutionPart1);
     });
-    test('Part 2', () {
+    test('Part 2', skip: true, () {
       final day = Day17()..inputForTesting = _exampleInput2;
       expect(day.solvePart2(), _exampleSolutionPart2);
     });

@@ -30,9 +30,7 @@ class Day15 extends GenericDay {
   @override
   int solvePart1() {
     final (field, moves) = parseInput();
-    var start = field.allPositions.firstWhere(
-      (position) => field.getValueAtPosition(position) == '@',
-    );
+    var start = field.firstPositionOf('@');
     for (final move in moves) {
       start = field.followMove(start, move);
     }
@@ -44,9 +42,7 @@ class Day15 extends GenericDay {
     final (field, moves) = parseInput();
     final scaledField = field.scaleUp;
 
-    var start = scaledField.allPositions.firstWhere(
-      (position) => scaledField.getValueAtPosition(position) == '@',
-    );
+    var start = scaledField.firstPositionOf('@');
     for (final move in moves) {
       start = scaledField.followMoveScaled(start, move);
     }

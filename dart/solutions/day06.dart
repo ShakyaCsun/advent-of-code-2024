@@ -5,19 +5,13 @@ class Day06 extends GenericDay {
 
   @override
   Field<String> parseInput() {
-    final grid =
-        input.getPerLine().map((line) {
-          return line.split('');
-        }).toList();
-    return Field(grid);
+    return StringField.fromInput(input);
   }
 
   @override
   int solvePart1() {
     final field = parseInput();
-    final startPosition = field.allPositions.firstWhere(
-      (element) => field.getValueAtPosition(element) == '^',
-    );
+    final startPosition = field.firstPositionOf('^');
 
     return travelField(field, Direction.up, startPosition).length;
   }
@@ -25,9 +19,7 @@ class Day06 extends GenericDay {
   @override
   int solvePart2() {
     final field = parseInput();
-    final startPosition = field.allPositions.firstWhere(
-      (element) => field.getValueAtPosition(element) == '^',
-    );
+    final startPosition = field.firstPositionOf('^');
 
     final path = travelField(field, Direction.up, startPosition);
     return path.difference({startPosition}).fold(0, (previousValue, position) {

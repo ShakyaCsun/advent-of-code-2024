@@ -5,20 +5,14 @@ class Day16 extends GenericDay {
 
   @override
   Field<String> parseInput() {
-    return Field(
-      input.getPerLine().map((line) => line.split('').toList()).toList(),
-    );
+    return StringField.fromInput(input);
   }
 
   @override
   int solvePart1() {
     final field = parseInput();
-    final startPosition = field.allPositions.firstWhere(
-      (element) => field.getValueAtPosition(element) == 'S',
-    );
-    final endPosition = field.allPositions.firstWhere(
-      (element) => field.getValueAtPosition(element) == 'E',
-    );
+    final startPosition = field.firstPositionOf('S');
+    final endPosition = field.firstPositionOf('E');
     return solveMazeOne(field, startPosition, endPosition);
   }
 
@@ -62,12 +56,8 @@ class Day16 extends GenericDay {
   }
 
   int solveMazeTwo(Field<String> field) {
-    final start = field.allPositions.firstWhere(
-      (element) => field.getValueAtPosition(element) == 'S',
-    );
-    final end = field.allPositions.firstWhere(
-      (element) => field.getValueAtPosition(element) == 'E',
-    );
+    final start = field.firstPositionOf('S');
+    final end = field.firstPositionOf('E');
     final knownLowestCosts = {
       // Facing East
       (start, Positions.right): 0,
