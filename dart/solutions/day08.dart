@@ -70,24 +70,6 @@ extension PositionPairX on (Position, Position) {
   }
 }
 
-extension IterablePairX<T> on Iterable<T> {
-  /// Adjacent Pairs of this [Iterable]
-  Iterable<(T, T)> get adjacentPairs {
-    return take(length - 1).mapIndexed((index, element) {
-      return (element, elementAt(index + 1));
-    });
-  }
-
-  /// All Pair combinations possible for this [Iterable]
-  Iterable<(T, T)> get allPairs {
-    if (length < 2) {
-      return {};
-    }
-    final first = this.first;
-    return {...skip(1).map((e) => (first, e)), ...skip(1).allPairs};
-  }
-}
-
 extension on Field<String> {
   Map<String, List<Position>> get nodeLocations {
     return allPositions.fold(<String, List<Position>>{}, (
