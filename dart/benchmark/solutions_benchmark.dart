@@ -53,6 +53,17 @@ void main() {
     Day08(),
     Day09(),
     Day10(),
+    Day11(),
+    Day12(),
+    Day13(),
+    Day14(),
+    Day15(),
+    Day16(),
+    Day17(),
+    Day18(),
+    Day19(),
+    Day20(),
+    Day21(),
   ];
-  runBenchmark(days);
+  runBenchmark(days.skip(20).toList());
 }

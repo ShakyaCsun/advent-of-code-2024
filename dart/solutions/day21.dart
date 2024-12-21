@@ -54,55 +54,57 @@ class Day21 extends GenericDay {
     if (cache.containsKey(cacheKey)) {
       return cache[cacheKey]!;
     }
-    if (depth == 1) {
-      var length = 0;
-      var start = DirectionalKey.activate;
-      for (final direction in directions) {
-        length += stepsForDirectionKeypad(start, direction).first.length;
-        start = direction;
-      }
-      cache[cacheKey] = length;
-      return length;
-    }
-    var length = 0;
-    var start = DirectionalKey.activate;
-
-    for (final direction in directions) {
-      length +=
-          stepsForDirectionKeypad(
-            start,
-            direction,
-          ).map((e) => computeLength(e, cache: cache, depth: depth - 1)).min;
-      start = direction;
-    }
+    final pairs = [DirectionalKey.activate, ...directions].adjacentPairs;
+    final length = pairs.fold(0, (previousValue, element) {
+      final (start, goal) = element;
+      return previousValue +
+          switch (depth) {
+            <= 1 => stepsForKeypad(start, goal).first.length,
+            _ =>
+              stepsForKeypad(start, goal).map((directions) {
+                return computeLength(
+                  directions,
+                  cache: cache,
+                  depth: depth - 1,
+                );
+              }).min,
+          };
+    });
     cache[cacheKey] = length;
     return length;
   }
 
-  /// Returns all optimal ways to enter given [code] using Directional Keypad
+  /// Returns all optimal ways to enter given [code] using a Directional Keypad
   List<List<DirectionalKey>> inputsFor(String code) {
-    var start = NumericKey.activate;
-    var directionsOptions = <List<DirectionalKey>>[[]];
-    for (final numericKeyLabel in code.split('')) {
-      final goal = NumericKey.fromLabel(numericKeyLabel);
-      directionsOptions =
-          directionsOptions
-              .expand(
-                (element) =>
-                    stepsForNumericKeypad(start, goal)
-                        .map<List<DirectionalKey>>((e) => [...element, ...e])
-                        .toList(),
-              )
-              .toList();
-      start = goal;
-    }
-    return directionsOptions;
+    return <NumericKey>[
+      NumericKey.activate,
+      ...code.split('').map(NumericKey.fromLabel),
+    ].adjacentPairs.fold<List<List<DirectionalKey>>>(const [[]], (
+      previousValue,
+      element,
+    ) {
+      final (start, goal) = element;
+      return previousValue.expand((previousDirections) {
+        return stepsForKeypad(
+          start,
+          goal,
+          useDirectional: false,
+        ).map((directions) => [...previousDirections, ...directions]);
+      }).toList();
+    });
   }
 
-  List<List<DirectionalKey>> stepsForNumericKeypad(
-    NumericKey start,
-    NumericKey goal,
-  ) {
+  /// Returns list of possible [DirectionalKey] sequence to go from [start] to
+  /// [goal].
+  ///
+  /// When [useDirectional] is `true`, [DirectionalKey] is used to check valid
+  /// [Position]s, otherwise [NumericKey] is used.
+  /// Defaults to `true`
+  List<List<DirectionalKey>> stepsForKeypad(
+    KeyPad start,
+    KeyPad goal, {
+    bool useDirectional = true,
+  }) {
     if (start == goal) {
       return [
         [DirectionalKey.activate],
@@ -118,45 +120,25 @@ class Day21 extends GenericDay {
       y.abs(),
       y > 0 ? DirectionalKey.down : DirectionalKey.up,
     );
-    bool validDirections(List<DirectionalKey> directions) {
-      return followDirections(
-        directions,
-        start.position,
-      ).none((position) => NumericKey.fromPosition(position) == null);
-    }
-
-    final directionSet = [...leftRight, ...upDown];
-    return [
-      ...directionSet.permutations
-          .where(validDirections)
-          .map((directions) => [...directions, DirectionalKey.activate]),
-    ];
-  }
-
-  List<List<DirectionalKey>> stepsForDirectionKeypad(
-    DirectionalKey start,
-    DirectionalKey goal,
-  ) {
-    if (start == goal) {
+    if (leftRight.isEmpty) {
       return [
-        [DirectionalKey.activate],
+        [...upDown, DirectionalKey.activate],
       ];
     }
-    final (x, y) = goal.position - start.position;
+    if (upDown.isEmpty) {
+      return [
+        [...leftRight, DirectionalKey.activate],
+      ];
+    }
 
-    final leftRight = List.filled(
-      x.abs(),
-      x > 0 ? DirectionalKey.right : DirectionalKey.left,
-    );
-    final upDown = List.filled(
-      y.abs(),
-      y > 0 ? DirectionalKey.down : DirectionalKey.up,
-    );
     bool validDirections(List<DirectionalKey> directions) {
-      return followDirections(
-        directions,
-        start.position,
-      ).none((position) => DirectionalKey.fromPosition(position) == null);
+      return followDirections(directions, start.position).none(
+        (position) =>
+            (useDirectional
+                ? DirectionalKey.fromPosition(position)
+                : NumericKey.fromPosition(position)) ==
+            null,
+      );
     }
 
     final directionSet = [...leftRight, ...upDown];
@@ -196,7 +178,7 @@ class Day21 extends GenericDay {
   }
 }
 
-enum DirectionalKey {
+enum DirectionalKey implements KeyPad {
   up('^', (1, 0)),
   activate('A', (2, 0)),
   left('<', (0, 1)),
@@ -222,11 +204,13 @@ enum DirectionalKey {
     return label;
   }
 
+  @override
   final String label;
+  @override
   final Position position;
 }
 
-enum NumericKey {
+enum NumericKey implements KeyPad {
   seven('7', (0, 0)),
   eight('8', (1, 0)),
   nine('9', (2, 0)),
@@ -256,6 +240,15 @@ enum NumericKey {
     return label;
   }
 
+  @override
+  final String label;
+  @override
+  final Position position;
+}
+
+abstract class KeyPad {
+  const KeyPad(this.label, this.position);
+
   final String label;
   final Position position;
 }
@@ -263,14 +256,13 @@ enum NumericKey {
 extension PermutationList<T> on List<T> {
   List<List<T>> get permutations {
     final length = this.length;
-    return EqualitySet.from(ListEquality<T>(), [
-      for (final indices
-          in Permutations(
-            length,
-            List.generate(length, (index) => index, growable: false),
-          )())
-        indices.map((e) => this[e]).toList(growable: false),
-    ]).toList();
+    return EqualitySet.from(
+      ListEquality<T>(),
+      Permutations(
+        length,
+        List.generate(length, (index) => index),
+      )().map((e) => e.map(elementAt).toList()),
+    ).toList();
   }
 }
 
