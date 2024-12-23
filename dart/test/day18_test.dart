@@ -95,7 +95,7 @@ void main() {
           _puzzleSolutionPart2 == null
               ? 'Skipped because _puzzleSolutionPart2 is null'
               : false,
-      () => expect(day.solve(71, 1024, part: Part.two), _puzzleSolutionPart2),
+      () => expect(day.solvePart2(), _puzzleSolutionPart2),
     );
   });
 }

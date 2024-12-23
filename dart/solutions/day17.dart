@@ -13,10 +13,9 @@ class Day17 extends GenericDay {
   }
 
   @override
-  int solvePart1() {
+  String solvePart1() {
     final solution = parseInput().getCompleteOutput();
-    print('Actual solution for Day 17 Part 1: $solution');
-    return 0;
+    return solution;
   }
 
   @override

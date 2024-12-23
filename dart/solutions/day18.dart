@@ -61,10 +61,8 @@ class Day18 extends GenericDay {
   }
 
   @override
-  int solvePart2() {
-    final solution = solve(71, 1024, part: Part.two);
-    print('Actual solution for Day 18 Part 2: $solution');
-    return -1;
+  String solvePart2() {
+    return solve(71, 1024, part: Part.two);
   }
 
   int getSteps(

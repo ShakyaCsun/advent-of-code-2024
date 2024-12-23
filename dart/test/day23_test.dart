@@ -82,7 +82,7 @@ void main() {
     });
     test('Part 2', () {
       final day = Day23()..inputForTesting = _exampleInput2;
-      expect(day.largestLan(), _exampleSolutionPart2);
+      expect(day.solvePart2(), _exampleSolutionPart2);
     });
   });
   group('Day 23 - Puzzle Input', () {
@@ -101,7 +101,7 @@ void main() {
           _puzzleSolutionPart2 == null
               ? 'Skipped because _puzzleSolutionPart2 is null'
               : false,
-      () => expect(day.largestLan(), _puzzleSolutionPart2),
+      () => expect(day.solvePart2(), _puzzleSolutionPart2),
     );
   });
 }

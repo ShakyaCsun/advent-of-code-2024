@@ -56,7 +56,7 @@ void main() {
   group('Day 17 - Example Input', () {
     test('Part 1', () {
       final day = Day17()..inputForTesting = _exampleInput1;
-      expect(day.parseInput().getCompleteOutput(), _exampleSolutionPart1);
+      expect(day.solvePart1(), _exampleSolutionPart1);
     });
     test('Part 2', skip: true, () {
       final day = Day17()..inputForTesting = _exampleInput2;
@@ -71,7 +71,7 @@ void main() {
           _puzzleSolutionPart1 == null
               ? 'Skipped because _puzzleSolutionPart1 is null'
               : false,
-      () => expect(day.parseInput().getCompleteOutput(), _puzzleSolutionPart1),
+      () => expect(day.solvePart1(), _puzzleSolutionPart1),
     );
     test(
       'Part 2',

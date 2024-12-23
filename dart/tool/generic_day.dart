@@ -3,8 +3,8 @@ import 'package:timing/timing.dart';
 
 import '../utils/input_util.dart';
 
-typedef SolveFunction = int Function();
-typedef SolutionWithDuration = (int, Duration);
+typedef SolveFunction = Object Function();
+typedef SolutionWithDuration = (Object, Duration);
 
 /// Provides the [InputUtil] for given day and a [printSolutions] method to show
 /// the puzzle solutions for given day.
@@ -22,8 +22,8 @@ abstract class GenericDay {
       input = InputUtil.fromMultiLineString(example);
 
   dynamic parseInput();
-  int solvePart1();
-  int solvePart2();
+  Object solvePart1();
+  Object solvePart2();
 
   void printSolutions() {
     final result1 = _solveAndTrackTime(solvePart1);
@@ -38,7 +38,7 @@ abstract class GenericDay {
 
   SolutionWithDuration _solveAndTrackTime(SolveFunction solve) {
     final tracker = SyncTimeTracker();
-    late final int solution;
+    late final Object solution;
     tracker.track(() => solution = solve());
     return (solution, tracker.duration);
   }

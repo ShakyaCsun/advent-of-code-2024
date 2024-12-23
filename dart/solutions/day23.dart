@@ -1,64 +1,59 @@
-import 'package:equatable/equatable.dart';
-
 import '../utils/index.dart';
 
 class Day23 extends GenericDay {
   Day23() : super(23);
 
   @override
-  List<Connection> parseInput() {
-    return [...input.getPerLine().map(Connection.fromLine)];
+  Map<String, Set<String>> parseInput() {
+    return input.getPerLine().fold(<String, Set<String>>{}, (
+      previousValue,
+      line,
+    ) {
+      final [one, two] = line.split('-');
+      return previousValue
+        ..update(one, (value) => {...value, two}, ifAbsent: () => {two})
+        ..update(two, (value) => {...value, one}, ifAbsent: () => {one});
+    });
   }
 
   @override
   int solvePart1() {
     final connections = parseInput();
-    final chiefCanBeAt = EqualitySet.from(
-      const SetEquality<Connection>(),
-      connections
-          .where((element) => element.canHaveChief)
-          .allPairs
-          .expand<Set<Connection>>((element) {
-            final (cOne, cTwo) = element;
-            final connected = cOne.connectedTo(cTwo);
-            if (connected != null && connections.contains(connected)) {
-              return [
-                {cOne, cTwo, connected},
-              ];
+    final Set<Set<String>> possibleLanWithChief = EqualitySet.from(
+      const SetEquality<String>(),
+      connections.keys
+          .where((element) => element.startsWith('t'))
+          .expand<Set<String>>((chiefComputer) {
+            final edges = connections[chiefComputer]!;
+            final threeConnectedComputers = <Set<String>>[];
+            for (final (index, computer) in edges.indexed) {
+              for (final otherComputer in edges.skip(index + 1)) {
+                if (connections[computer]?.contains(otherComputer) ?? false) {
+                  threeConnectedComputers.add({
+                    chiefComputer,
+                    computer,
+                    otherComputer,
+                  });
+                }
+              }
             }
-            return [];
+            return threeConnectedComputers;
           }),
     );
-    return chiefCanBeAt.length;
+    return possibleLanWithChief.length;
   }
 
   @override
-  int solvePart2() {
-    print('Answer for Day 23 Part 2: ${largestLan()}');
-
-    return 0;
-  }
-
-  String largestLan() {
+  String solvePart2() {
     final connections = parseInput();
-    final computersConnections = connections.fold(<String, Set<String>>{}, (
-      previousValue,
-      element,
-    ) {
-      final Connection(:one, :two) = element;
-      previousValue
-        ..update(one, (value) => {...value, two}, ifAbsent: () => {two})
-        ..update(two, (value) => {...value, one}, ifAbsent: () => {one});
-      return previousValue;
-    });
     final interconnectedComputers = EqualitySet(const ListEquality<String>());
 
     for (final MapEntry(key: computer, value: connectedComputers)
-        in computersConnections.entries) {
+        in connections.entries) {
       var interconnection = <String>{...connectedComputers, computer};
       for (final connectedComputer in connectedComputers) {
         final other = <String>{
-          ...?computersConnections[connectedComputer],
+          ...?connections[connectedComputer],
           connectedComputer,
         };
         if (interconnection.intersection(other).length == 1) {
@@ -73,48 +68,4 @@ class Day23 extends GenericDay {
         .first
         .join(',');
   }
-}
-
-class Connection extends Equatable {
-  const Connection(this.one, this.two);
-
-  factory Connection.fromLine(String line) {
-    final [one, two] = line.split('-');
-    return Connection(one, two).normalized();
-  }
-
-  final String one;
-  final String two;
-
-  Connection normalized() {
-    if (one.compareTo(two) > 0) {
-      return Connection(two, one);
-    }
-    return Connection(one, two);
-  }
-
-  Connection? connectedTo(Connection other) {
-    final Connection(one: otherOne, two: otherTwo) = other;
-    final set = {one, two};
-    final otherSet = {otherOne, otherTwo};
-    final differenceSet = set
-        .difference(otherSet)
-        .union(otherSet.difference(set));
-    if (differenceSet.toList() case [final a, final b]) {
-      return Connection(a, b).normalized();
-    }
-    return null;
-  }
-
-  bool hasComputer(String computer) {
-    return one == computer || two == computer;
-  }
-
-  bool get canHaveChief => one.startsWith('t') || two.startsWith('t');
-
-  @override
-  bool? get stringify => true;
-
-  @override
-  List<Object> get props => [one, two];
 }

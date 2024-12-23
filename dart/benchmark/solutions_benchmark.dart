@@ -64,6 +64,8 @@ void main() {
     Day19(),
     Day20(),
     Day21(),
+    Day22(),
+    Day23(),
   ];
   runBenchmark(days.skip(20).toList());
 }
